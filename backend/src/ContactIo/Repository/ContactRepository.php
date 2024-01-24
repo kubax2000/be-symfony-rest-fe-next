@@ -28,7 +28,32 @@ class ContactRepository extends ServiceEntityRepository
         $entity = $this->find($id);
 
         if ($entity === null) {
-            throw new NotFoundException(sprintf("Contact id: %s", $id));
+            throw new NotFoundException(sprintf("Contact not found (id: %d)", $id));
+        }
+
+        return $entity;
+    }
+
+    public function findByIdentifier(string $identifier): ?Contact
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb->where('c.identifier = :identifier')
+            ->setParameter('identifier', $identifier);
+
+        /** @var ?Contact $result */
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result;
+    }
+
+    public function getByIdentifier(string $identifier): Contact
+    {
+        /** @var Contact|null $entity */
+        $entity = $this->findByIdentifier($identifier);
+
+        if ($entity === null) {
+            throw new NotFoundException(sprintf("Contact not found (identifier: %s)", $identifier));
         }
 
         return $entity;
@@ -54,6 +79,12 @@ class ContactRepository extends ServiceEntityRepository
             ->orderBy('c.id', 'ASC');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function remove(Contact $contact): void
+    {
+        $this->getEntityManager()->remove($contact);
+        $this->getEntityManager()->flush();
     }
 
     public function store(Contact $contact): Contact

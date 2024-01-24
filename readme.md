@@ -1,7 +1,15 @@
-# TEST
+# Start
 
-start v BE: 15:30
-end v BE: 17:00
+```shell
+docker compose build
+```
 
-start v BE: 19:10
-end v BE: 20:40
+```shell
+docker compose up -d
+```
+
+```shell
+docker exec -it backend php bin/console d:m:m
+```
+
+[Check this link](http://localhost)

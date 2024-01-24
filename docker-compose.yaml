@@ -5,8 +5,8 @@ services:
   backend:
     container_name: backend
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     networks:
       - database
     ports:
@@ -25,9 +25,15 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-#  frontend:
-#    ports:
-#      - "80:80"
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    volumes:
+      - ./frontend:/usr/src/app
 
   myadmin:
     image: phpmyadmin:latest

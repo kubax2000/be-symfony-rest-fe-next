@@ -11,6 +11,7 @@ readonly class ContactResponse implements JsonSerializable
 {
     public function __construct(
         private int $id,
+        private string $identifier,
         private string $name,
         private string $surname,
         private ?string $phone,
@@ -23,6 +24,7 @@ readonly class ContactResponse implements JsonSerializable
     {
         return new self(
             $contact->getId(),
+            $contact->getIdentifier(),
             $contact->getName(),
             $contact->getSurname(),
             $contact->getPhone(),
@@ -34,6 +36,11 @@ readonly class ContactResponse implements JsonSerializable
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
     }
 
     public function getName(): string
@@ -65,6 +72,7 @@ readonly class ContactResponse implements JsonSerializable
     {
         return [
             'id' => $this->getId(),
+            'identifier' => $this->getIdentifier(),
             'name' => $this->getName(),
             'surname' => $this->getSurname(),
             'phone' => $this->getPhone(),

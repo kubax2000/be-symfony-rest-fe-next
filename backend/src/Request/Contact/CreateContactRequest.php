@@ -33,6 +33,10 @@ class CreateContactRequest
 
     public function getPhone(): ?string
     {
+        if (empty($this->phone)) {
+            return null;
+        }
+
         return $this->phone;
     }
 
@@ -43,6 +47,10 @@ class CreateContactRequest
 
     public function getNote(): ?string
     {
+        if (empty($this->note)) {
+            return null;
+        }
+
         return $this->note;
     }
 }

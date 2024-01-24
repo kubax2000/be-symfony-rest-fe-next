@@ -14,9 +14,12 @@ use App\Utils\Arrays;
 use ContactIo\Business\ContactBusiness;
 use ContactIo\Business\ContactDataBusiness;
 use ContactIo\Repository\ContactRepository;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Options;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +53,7 @@ class ContactController extends AbstractController
     public function listAction(
         #[MapQueryString] ListContactsRequest $request = new ListContactsRequest(),
     ): View {
-        $contacts = $this->contactRepository->list($request->getPage(), $request->getOffset());
+        $contacts = $this->contactRepository->list($request->getLimit(), $request->getOffset());
 
         $response = Arrays::map(
             $contacts,
@@ -67,14 +70,26 @@ class ContactController extends AbstractController
         return $this->createSuccessResponse($response, $pagination);
     }
 
+    #[Options('/contacts')]
+    public function listOptionsAction(): View
+    {
+        return $this->createSuccessResponse(null);
+    }
+
     #[Get('/contacts/{id}', requirements: ['id' => '\d+'])]
-    public function detailAction(int $id): View
+    public function detailByIdAction(int $id): View
     {
         $contact = $this->contactRepository->get($id);
 
         $response = ContactResponse::fromEntity($contact);
 
         return $this->createSuccessResponse($response);
+    }
+
+    #[Options('/contacts/{id}', requirements: ['id' => '\d+'])]
+    public function detailByIdOptionsAction(): View
+    {
+        return $this->createSuccessResponse(null);
     }
 
     #[Put('/contacts/{id}', requirements: ['id' => '\d+'])]
@@ -89,5 +104,31 @@ class ContactController extends AbstractController
         $response = ContactResponse::fromEntity($contact);
 
         return $this->createSuccessResponse($response);
+    }
+
+    #[Delete('/contacts/{id}', requirements: ['id' => '\d+'])]
+    public function deleteAction(int $id): View
+    {
+        $contact = $this->contactRepository->get($id);
+
+        $this->contactRepository->remove($contact);
+
+        return $this->createSuccessResponse(null);
+    }
+
+    #[Get('/contacts/{identifier}')]
+    public function detailByIdentifierAction(string $identifier): View
+    {
+        $contact = $this->contactRepository->getByIdentifier($identifier);
+
+        $response = ContactResponse::fromEntity($contact);
+
+        return $this->createSuccessResponse($response);
+    }
+
+    #[Options('/contacts/{identifier}')]
+    public function detailByIdentifierOptionsAction(): View
+    {
+        return $this->createSuccessResponse(null);
     }
 }

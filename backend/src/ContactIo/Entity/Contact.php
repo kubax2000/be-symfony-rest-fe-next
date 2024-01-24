@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ContactIo\Entity;
 
+use App\Utils\Strings;
 use ContactIo\Repository\ContactRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,6 +15,9 @@ class Contact
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private int $id;
+
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private string $identifier;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
@@ -39,6 +43,7 @@ class Contact
     ) {
         $this->name = $name;
         $this->surname = $surname;
+        $this->calculateIdentifier();
         $this->phone = $phone;
         $this->email = $email;
         $this->note = $note;
@@ -47,6 +52,11 @@ class Contact
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
     }
 
     public function getName(): string
@@ -107,5 +117,17 @@ class Contact
         $this->note = $note;
 
         return $this;
+    }
+
+    private function calculateIdentifier(): void
+    {
+        $identifier = sprintf(
+            '%s-%s-%s',
+            $this->name,
+            $this->surname,
+            Strings::random(8),
+        );
+
+        $this->identifier = Strings::slugify($identifier);
     }
 }
