@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Utils;
 
 use Symfony\Component\String\ByteString;
@@ -15,6 +17,7 @@ class Strings
     public static function slugify(string $string): string
     {
         $slugger = new AsciiSlugger();
+
         return $slugger->slug($string)->lower()->toString();
     }
 }

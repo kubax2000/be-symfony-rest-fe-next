@@ -30,7 +30,7 @@ class UpdateContactRequest
 
     public function getPhone(): ?string
     {
-        if (empty($this->phone)) {
+        if ($this->phone === '') {
             return null;
         }
 
@@ -39,7 +39,7 @@ class UpdateContactRequest
 
     public function getNote(): ?string
     {
-        if (empty($this->note)) {
+        if ($this->note === '') {
             return null;
         }
 
